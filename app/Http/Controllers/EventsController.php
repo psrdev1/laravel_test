@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Event;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use App\Models\Workshop;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class EventsController extends BaseController
 {
     public function getWarmupEvents() {
         return Event::all();
     }
+
 
     /*
      Requirements:
@@ -101,7 +104,10 @@ class EventsController extends BaseController
      */
 
     public function getEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 1');
+         return Event::with('workshops')->get();
+
+
+
     }
 
 
@@ -180,6 +186,8 @@ class EventsController extends BaseController
      */
 
     public function getFutureEventsWithWorkshops() {
-        throw new \Exception('implement in coding task 2');
+        return Event::with('workshops')->whereHas('workshops',function ($event) {
+            $event->whereDate('start',">=" , Carbon::now());
+        })->get();
     }
 }
